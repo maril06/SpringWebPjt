@@ -38,5 +38,11 @@ public class SampleTests {
 		log.info(restaurant);
 		log.info("===================================");
 		log.info(restaurant.getChef());
+		
+		
+		/* 1) 테스트 코드가 실행되기 위해서 스프링 프레임워크가 동작함.
+		 * 2) 동작 과정에서 필요한 객체들이 스프링에 등록됨.
+		 * 3) 의존성 주입이 필요한 객체는 자동으로 주입이 이루어졌다.
+		 * */
 	}
 }
