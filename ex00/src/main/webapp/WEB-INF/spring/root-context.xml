@@ -8,6 +8,7 @@
 	<!-- 스프링 프레임워크에서 관리해야 하는 객체를 설정하는 파일 -->	
 	<!-- 아래쪽의 Namespaces탭에서 context 항목을 체크한다. -->		
 	
+	<!-- 커넥션 풀 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" ></property>
 		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:XE"></property>
@@ -19,6 +20,12 @@
 		<constructor-arg ref="hikariConfig"/>
 	</bean>
 	
+	<!-- Mybatis에서 가장 핵심적인 객체 : SQLSession, SQLSessionFactory 
+		SQLSession을 통해서 Connection을 생성하거나 원하는 SQL을 전달하고, 결과를 리턴받는 구조로 작성.
+	-->
+	<bean id="sqlSessionFactoryFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
 	
 	
 	
