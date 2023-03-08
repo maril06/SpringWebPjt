@@ -12,8 +12,12 @@
 	
 	<!-- 커넥션 풀 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<!-- log4jdc를 이용하기 위하여 수정이 필요함. 
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" ></property>
 		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:XE"></property>
+		 -->
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
+		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"></property>
 		<property name="username" value="book_ex"></property>
 		<property name="password" value="book_ex"></property>
 	</bean>

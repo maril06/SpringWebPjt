@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zerock</groupId>
 	<artifactId>controller</artifactId>
-	<name>ex00</name>
+	<name>jex01</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
-		<java-version>1.6</java-version>
+		<java-version>1.8</java-version>
 		<org.springframework-version>5.0.7.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
@@ -59,14 +59,31 @@
 			<version>${org.slf4j-version}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>runtime</scope>
+		</dependency>
 
-		<!-- 기존의 log4j는 삭제 <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
-			<version>1.2.15</version> <exclusions> <exclusion> <groupId>javax.mail</groupId> 
-			<artifactId>mail</artifactId> </exclusion> <exclusion> <groupId>javax.jms</groupId> 
-			<artifactId>jms</artifactId> </exclusion> <exclusion> <groupId>com.sun.jdmk</groupId> 
-			<artifactId>jmxtools</artifactId> </exclusion> <exclusion> <groupId>com.sun.jmx</groupId> 
-			<artifactId>jmxri</artifactId> </exclusion> </exclusions> <scope>runtime</scope> 
-			</dependency> -->
 		<!-- @Inject -->
 		<dependency>
 			<groupId>javax.inject</groupId>
@@ -100,7 +117,6 @@
 			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
-
 		<!-- 새로 추가한 라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
 		<dependency>
@@ -130,7 +146,6 @@
 			<artifactId>HikariCP</artifactId>
 			<version>2.7.4</version>
 		</dependency>
-
 		<!-- Mybatis 관련 라이브러리 추가 -->
 		<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
 		<dependency>
@@ -156,18 +171,6 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-		
-		
-		<!-- https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4 -->
-		<!-- PreparedStatement에 사용된 ? 가 어떤 값으로 처리되었는지 확인하는 기능을 추가할 수 있다. -->
-		<!-- src/main/resources 밑에 log4jdbc.log4j2.properties파일을 추가한다. -->
-		<!-- root-context.xml의 일부를 수정도 해야함. -->
-		<dependency>
-			<groupId>org.bgee.log4jdbc-log4j2</groupId>
-			<artifactId>log4jdbc-log4j2-jdbc4</artifactId>
-			<version>1.16</version>
-		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>
@@ -205,7 +208,15 @@
 					<mainClass>org.test.int1.Main</mainClass>
 				</configuration>
 			</plugin>
-
+			<!-- web.xml을 삭제하면, pom.xml에서 에러가 발생한다. 이를 해결하기 위해서 설정을 추가해줌 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
