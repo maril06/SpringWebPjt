@@ -145,7 +145,35 @@ public class SampleController {
 	 * TodoDTO(title=test, dueDate=Mon Jan 01 00:00:00 JST 2018)
 	 * */
 	
-	
+	/**********************************************************************************************************************
+	 *  !!!!! Controller의 메서드를 작성할 때는 특별하게 Model이라는 타입을 파라미터로 지정할 수 있음!!!!!!!!!
+	 *  Model 객체는 JSP에 컨트롤러에서 생성된 데이터를 담아서 전달하는 역할을 하는 존재임!!! 
+	 *  (((JSP와 같인 뷰로 전달해야 하는 데이터를 담아서 보낼 수 있음
+	 * 
+	 * ===> 메서드의 파라미터를 Model 타입으로 선언하게 되면, 자동으로 Spirng MVC에서 
+	 *          Model타입의 객체를 만들어 주기 때문에, 개발자 입장에서 필요한 데이터를 담아주는 작업만 하면 됨.
+	 * 
+	 * 기본적으로 Java Beans 규칙에 맞는 객체는 다시 화면으로 객체를 전달함.
+	 * Java Beans 규칙 : 단순히 생성자가 없거나 빈생성자를 가져야하며, getter/setter를 가진 클래스의 객체
+	 * SampleDTO 같은 경우 Java Bean의 규칙에 맞기 떄문에 다시 화면까지 전달됨.
+	 * 전달 될 때, 클래스명의 앞글자는 소문자로 처리됨.
+	 * !!! 반면 기본 자료형의 경우 파라미터로 선언하더라도 기본적으로 화면까지 전달되지는 않음.(따로 Model에 셋팅해서 보내야함)
+	 * ********************************************************************************************************************/
+	@GetMapping("/ex04")
+	public String ex04(SampleDTO dto, int page) {
+		
+		log.info("dto: " + dto);
+		log.info("page: " + page);
+		
+		
+		/*<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+				<beans:property name="prefix" value="/WEB-INF/views/" />
+				<beans:property name="suffix" value=".jsp" />
+		  </beans:bean>
+		 * servlet-context.xml 에서 정의된 ViewResolver에 의해 views 아래에 있는 sample 아래에 있는 ex04.jsp로 전달됨.
+		 * */
+		return "/sample/ex04";
+	}
 	
 	
 }
