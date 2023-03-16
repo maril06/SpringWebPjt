@@ -1,19 +1,21 @@
 package org.zerock.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.util.Arrays;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.zerock.domain.SampleDTO;
 import org.zerock.domain.SampleDTOList;
 import org.zerock.domain.TodoDTO;
@@ -148,7 +150,7 @@ public class SampleController {
 	/**********************************************************************************************************************
 	 *  !!!!! Controller의 메서드를 작성할 때는 특별하게 Model이라는 타입을 파라미터로 지정할 수 있음!!!!!!!!!
 	 *  Model 객체는 JSP에 컨트롤러에서 생성된 데이터를 담아서 전달하는 역할을 하는 존재임!!! 
-	 *  (((JSP와 같인 뷰로 전달해야 하는 데이터를 담아서 보낼 수 있음
+	 *  (((JSP와 같이 뷰로 전달해야 하는 데이터를 담아서 보낼 수 있음
 	 * 
 	 * ===> 메서드의 파라미터를 Model 타입으로 선언하게 되면, 자동으로 Spirng MVC에서 
 	 *          Model타입의 객체를 만들어 주기 때문에, 개발자 입장에서 필요한 데이터를 담아주는 작업만 하면 됨.
@@ -174,6 +176,128 @@ public class SampleController {
 		 * */
 		return "/sample/ex04";
 	}
+	
+	
+	/***********************************************************************************/
+	/* @ModelAttribute는 강제로, 전달받은 파라미터를 Model에 담아서 전달할 때 필요한 어노테이션이다.
+	 *  @ModelAttribute가 걸린 파라미터는 타입에 관계없이 무조건 Model에 담아서 전달됨.
+	 *  http://localhost:8080/sample/ex04_1?name=aaa&age=11&page=9
+	 *  
+	 *  SampleDTO SampleDTO(name=aaa, age=11)
+		PAGE 9
+		
+		페이지도 화면에 전달된걸 확인할 수 있다.
+	 *  
+	 */
+	@GetMapping("/ex04_1")
+	public String ex04_1(SampleDTO dto, @ModelAttribute("page") int page) {
+		
+		log.info("dto: " + dto);
+		log.info("page: " + page);
+		
+		return "/sample/ex04";
+	}
+	
+	/******************************************************************************************************************************************************************/
+	/*		Controller의 리턴 타입.
+	 * 
+	 ******************************************************************************************************************************************************************/
+	/* 1. void 타입
+	 *   => 해당 URL의 경로를 그대로 JSP 파일의 이름으로 사용한다. => ex05.jsp로 이동
+	 * */
+	@GetMapping("/ex05")
+	public void ex05() {
+		
+		log.info("/ex05......................................................................................................................");
+		
+	}
+	
+	/* 2. String 타입
+	 *   => 상황에 따라 다른 화면을 보여줄 필요가 있을 경우 유용하게 사용됨.
+	 * */
+	
+	/* 3. 객체 타입
+	 *   => 리턴 타입을 VO, DTO등의 객체 타입으로 지정하면 주로 JSON 데이터를 만들어 내는 용도로 사용한다.
+	 *   pom.xml에 jackson-databind 추가해야함.
+	 *   스프링 MVC가 자동으로 Json타입으로 객체를 변환해서 전달해 준다.
+	 *   
+	 *   {
+			"name": "홍길동",
+			"age": 10
+		  }
+	 * */
+	@GetMapping("/ex06")
+	public @ResponseBody SampleDTO ex06() {
+		
+		log.info("/ex06......................................................................................................................");
+		
+		SampleDTO dto = new SampleDTO();
+		dto.setAge(10);
+		dto.setName("홍길동");
+		
+		return dto;
+	}
+	
+	/* ResponseEntity를 통해서 원하는 헤더 정보나 데이터를 전달 할 수 있다.
+	 * => HttpHeaders 객체를 같이 전달 할 수 있고, 원하는 HTTP 헤더 메시지를 가공하는 것이 가능함.
+	 * HTTP 헤더의 역할
+	 * HTTP 헤더는 클라이언트와 서버가 요청 또는 응답으로 부가적인 정보를 전송할 수 있도록 해줍니다.
+	 * 헤더?
+	 * 저장 되거나 전송되는 데이터 블록의 맨 앞에 위치한 데이터를 가리킵니다.
+		특정 프로토콜의 헤더의 내용은 특정 프로토콜의 기능을 제공하기 위한 정보를 담고있습니다.
+		헤더의 뒤에 이어지는 데이터는 페이로드 혹은 바디로 불립니다.
+	 * */
+	@GetMapping("/ex07")
+	public ResponseEntity<String> ex07() {
+		
+		log.info("/ex07......................................................................................................................");
+		
+		String msg = "{\" name\": \"홍길동\"}";
+		
+		HttpHeaders header = new HttpHeaders();
+		header.add("Content-Type", "application/json;charset=UTF-8");
+		
+		return new ResponseEntity<>(msg, header, HttpStatus.OK);
+	}
+	
+	/*void타입이기 때문에 url주소와 같은 jsp파일로 자동으로 리턴한다.*/
+	@GetMapping("/exUpload")
+	public void exUpload() {
+		
+		log.info("/exUpload......................................................................................................................");
+		
+	}
+	
+	/*
+	 *  스프링 MVC는 전달되는 파라미터가 동일한 이름으로 여러개 존재하면 배열로 처리 가능..!!!
+	 *  MultipartFile의 배열타입으로 작성.
+	 * 
+	 *  INFO : org.zerock.controller.SampleController - ------------------------------------------------------------------
+		INFO : org.zerock.controller.SampleController - name : 춘식이.png
+		INFO : org.zerock.controller.SampleController - size : 266734
+		INFO : org.zerock.controller.SampleController - ------------------------------------------------------------------
+		INFO : org.zerock.controller.SampleController - name : 스크린샷_20230125_105657.png
+		INFO : org.zerock.controller.SampleController - size : 117504
+		INFO : org.zerock.controller.SampleController - ------------------------------------------------------------------
+		INFO : org.zerock.controller.SampleController - name : 스크린샷_20230209_070431.png
+		INFO : org.zerock.controller.SampleController - size : 52440
+		INFO : org.zerock.controller.SampleController - ------------------------------------------------------------------
+		INFO : org.zerock.controller.SampleController - name : 
+		INFO : org.zerock.controller.SampleController - size : 0
+	 * 
+	 * */
+	@PostMapping("/exUploadPost")
+	public void exUploadPost(ArrayList<MultipartFile> files) {
+		
+		files.forEach(file -> {
+			log.info("------------------------------------------------------------------");
+			log.info("name : " + file.getOriginalFilename());
+			log.info("size : " + file.getSize());
+		});
+	}
+	
+	
+	
 	
 	
 }
