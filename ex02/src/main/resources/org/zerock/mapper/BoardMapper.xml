@@ -40,5 +40,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select * from tbl_board where bno = #{bno}
 	</select>
 	
+	<delete id="delete">
+		delete from tbl_board where bno = #{bno}
+	</delete>
+	
+	
+	<update id="update">
+		update tbl_board
+		set title = #{title},
+			content=#{content},
+			writer = #{writer},
+			updateDate = sysdate
+		where bno = #{bno}
+	</update>
+	
 	
 </mapper>

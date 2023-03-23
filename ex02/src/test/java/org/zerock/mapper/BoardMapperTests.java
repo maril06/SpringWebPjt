@@ -59,14 +59,39 @@ public class BoardMapperTests {
 //		log.info(board);
 //	}
 	
+//	@Test
+//	public void testRead() {
+//		
+//		//존재하는 게시물 번호로 테스트
+//		BoardVO board = mapper.read(22L);
+//		
+//		
+//		//.BoardVO(bno=22, title=테스트 작성 글(selectKey), content=테스트 작성 내용(selectKey), writer=테스트 작성자(selectKey), regdate=Thu Mar 23 20:14:33 JST 2023, updateDate=Thu Mar 23 20:14:33 JST 2023)
+//		log.info(board);
+//	}
+	
+//	@Test
+//	public void testDelete() {
+//		
+//		//INFO : jdbc.sqltiming - delete from tbl_board where bno = 22 
+//		//DELETE COUNT : 1
+//		log.info("DELETE COUNT : " + mapper.delete(22L));
+//	}
+	
+	
 	@Test
-	public void testRead() {
+	public void testUpdate() {
+		BoardVO board = new BoardVO();
 		
-		//존재하는 게시물 번호로 테스트
-		BoardVO board = mapper.read(22L);
+		board.setBno(21L);
+		board.setTitle("수정수정수정수정");
+		board.setContent("수정내용수정내용");
+		board.setWriter("수정자");
 		
-		
-		//.BoardVO(bno=22, title=테스트 작성 글(selectKey), content=테스트 작성 내용(selectKey), writer=테스트 작성자(selectKey), regdate=Thu Mar 23 20:14:33 JST 2023, updateDate=Thu Mar 23 20:14:33 JST 2023)
-		log.info(board);
+		int count = mapper.update(board);
+		//update tbl_board set title = '수정수정수정수정', content='수정내용수정내용', writer = '수정자', updateDate = sysdate 
+		//UPDATE COUNT  : 1
+		log.info("UPDATE COUNT  : " + count );
 	}
+	
 }
