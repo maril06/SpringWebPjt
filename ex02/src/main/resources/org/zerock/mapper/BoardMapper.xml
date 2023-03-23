@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.BoardMapper">
+<!-- mapper인터페이스와 동일한 이름으로 지어줘야 한다. -->
+	
+	<!-- id속성 값은 메서드와 일치해야 한다. -->
+	<select id="getList" resultType="org.zerock.domain.BoardVO">
+		<![CDATA[
+			select * from tbl_board where bno > 0
+		]]>
+	</select>
+	<!-- CDATA부분은 XML에서 부등호를 사용하기 위해서 사용함. -->
+	
+	
+	<!-- insert()는 단순히 시퀀스의 다음값을 구해서 insert할 때 사용함
+		insert문은 몇 건의 데이터가 변경되었는지만을 알려주기 때문에, 추가된 값의 pk값을 알 수 없다.
+		하지만 1번의 sql문으로 작업이 완료되는 장점이 있음,
+	 -->
+	<insert id="insert">
+		insert into tbl_board (bno, title, content, writer)
+		values (seq_board.nextval, #{title}, #{content}, #{writer})
+	</insert>
+	
+	
+	<!-- @SelectKey라는 Mybatis의 어노테이션을 사용.
+			주로 pk값을 미리(before) sql을 통해서 처리하고 특정한 이름으로 결과를 보관하는 방식.
+			#{bno} 처럼 이미 값이 처리된 결과를 이용한다.
+	 -->
+	<insert id="insertSelectKey">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
+			select seq_board.nextval from dual
+		</selectKey>
+		insert into tbl_board (bno, title, content, writer)
+		values (#{bno}, #{title}, #{content}, #{writer})
+	</insert>
+	
+	<select id="read" resultType="org.zerock.domain.BoardVO">
+		select * from tbl_board where bno = #{bno}
+	</select>
+	
+	
+</mapper>
